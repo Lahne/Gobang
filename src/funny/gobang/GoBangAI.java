@@ -6,10 +6,12 @@ public class GoBangAI implements Player {
 
 	protected ChessBoard board;
 	
-	
+	public String getName(){
+		return this.getClass().getSimpleName();
+	}
 	
 	@Override
-	public int[] thinkNextDown() {
+	public Down thinkNextDown() {
 		Random rand = new Random();
 		int x = -1;
 		int y = -1;
@@ -17,7 +19,7 @@ public class GoBangAI implements Player {
 			x = rand.nextInt(board.getCapacity());
 			y = rand.nextInt(board.getCapacity());
 		}while(! board.canDown(x, y));
-		return new int[]{x,y};
+		return new Down(x,y,ChessBoard.White);
 	}
 
 	@Override
@@ -26,7 +28,7 @@ public class GoBangAI implements Player {
 	}
 
 	@Override
-	public void watchOpponentDown(int x, int y) {
+	public void watchOpponentDown(Down down) {
 		// TODO Auto-generated method stub
 		
 	}

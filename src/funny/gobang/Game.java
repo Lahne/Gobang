@@ -24,9 +24,9 @@ public class Game {
 		this.defensive = player;
 	}
 	
-	private boolean interrupted(int[] down){
-		int x = down[0];
-		int y = down[1];
+	private boolean interrupted(Down down){
+		int x = down.getX();
+		int y = down.getY();
 		int capacity= chessBoard.getCapacity();
 		if (x < 0 || x >= capacity || y < 0 || y >= capacity){
 			return true;
@@ -49,22 +49,21 @@ public class Game {
 		int nextChess = ChessBoard.Black;
 		chessBoard.printCurrentBoard();
 		while ( !isGameOver() ){
-			int[] down = nextPlayer.thinkNextDown();
+			Down down = nextPlayer.thinkNextDown();
 			
 			String player = "";
 			if (nextPlayer.equals(offensive)){
-				player = "offensive["+ offensive.getClass().getSimpleName()+"]";
+				player = "offensive["+ offensive.getName()+"]";
 			}else{
-				player = "defensive["+ defensive.getClass().getSimpleName()+"]";
+				player = "defensive["+ defensive.getName()+"]";
 			}
 			if (interrupted(down)){
 				System.out.println(player + " interrupt the game!");
 				break;
 			}
-			int x = down[0];
-			int y = down[1];
-			chessBoard.down(x, y, nextChess);
-			System.out.println(String.format("%s down <X,Y> : <%d,%d>",player,x,y));
+
+			chessBoard.down(down);
+			System.out.println(String.format("%s down <X,Y> : <%d,%d>",player,down.getX(),down.getY()));
 			chessBoard.printCurrentBoard();
 			nextPlayer = nextPlayer.equals(defensive) ? offensive : defensive;
 			nextChess = nextChess == ChessBoard.Black ? ChessBoard.White : ChessBoard.Black;
