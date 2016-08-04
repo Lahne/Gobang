@@ -7,8 +7,26 @@ import java.io.InputStreamReader;
 public class ReadHelper {
 	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	
-	public int[] readNextDown(String chessMan){
-		System.out.println("Please input next "+chessMan +" down X,Y :");
+	public String pickChessMan(){
+		System.out.println("Please pick chessMan Black or White");
+		String line = null;
+		try {
+			line = br.readLine();
+			System.out.println("readline:" + line);
+		} catch (IOException e) {
+			throw new RuntimeException("System.in read error!");
+		}
+		
+		if (line == null || line.trim().equals("q") 
+				|| line.trim().equals("bye") || line.trim().equals("exit")
+				|| line.trim().equals("quit")){
+			return null;
+		}
+		return line;	
+	}
+	
+	public int[] readNextDown(String printAtfirst){
+		System.out.println(printAtfirst);
 		String line = null;
 		try {
 			line = br.readLine();
@@ -37,5 +55,13 @@ public class ReadHelper {
 			System.out.println("Can't covert "+ str +" to number" );
 		}
 		return new int[]{x,y};
+	}
+	
+	public void close(){
+		try {
+			br.close();
+		} catch (IOException e) {
+			System.out.println("Close System.in Error");
+		}
 	}
 }

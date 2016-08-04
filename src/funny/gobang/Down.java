@@ -26,4 +26,18 @@ public class Down {
 		return chessMan;
 	}
 	
+	public boolean equal(Object obj){
+		
+		if (obj instanceof Down){
+			Down c = (Down)obj;
+			
+			if (c.getX() == this.getX() && c.getY() == this.getY() && this.getChessMan() == c.getChessMan()){
+				return true;
+			}
+			
+		}
+		
+		return false;
+	}
+	
 }
