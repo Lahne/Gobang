@@ -6,8 +6,12 @@ public class Man implements Player {
 	protected ChessBoard chessBoard;
 	
 	
+	public String getName(){
+		return this.getClass().getSimpleName();
+	}
+	
 	@Override
-	public int[] thinkNextDown() {
+	public Down thinkNextDown() {
 		int capacity = chessBoard.getCapacity();
 		int nextChess = ChessBoard.Black;
 		String nextChessMan = nextChess == ChessBoard.Black ? "Black": "White";
@@ -20,12 +24,13 @@ public class Man implements Player {
 				continue;
 			}
 			if (chessBoard.canDown(x, y)){
-				return new int[]{x,y};
+				return new Down(x,y,nextChess);
 			}else{
 				System.out.println(String.format("Current Psition %d,%d has been setted, please choose a blank position",x,y));
 			}
 		}
-		return new int[]{-1,-1};
+		
+		return new Down(-1,-1,nextChess);
 	}
 	
 
@@ -36,7 +41,7 @@ public class Man implements Player {
 
 
 	@Override
-	public void watchOpponentDown(int x, int y) {
+	public void watchOpponentDown(Down down) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -32,6 +32,12 @@ public class ChessBoard {
 		return capacity;
 	}
 
+	public boolean canDown(Down down){
+		int x = down.getX();
+		int y = down.getY();
+		return board[y][x] == Blank;
+	}
+	
 	public boolean canDown(int x, int y){
 		return board[y][x] == Blank;
 	}
@@ -48,9 +54,11 @@ public class ChessBoard {
 	}
 	
 	
-	public boolean down(int x,int y, int chessMan){
-		if (board[y][x] == Blank){
-			board[y][x] = chessMan;
+	public boolean down(Down down){
+		if (canDown(down)){
+			int x = down.getX();
+			int y = down.getY();
+			board[y][x] = down.getChessMan();
 			return true;
 		}
 		return false;
@@ -100,7 +108,7 @@ public class ChessBoard {
 				System.out.println("Out of index, X and Y should >=0 && < "+capacity);
 				continue;
 			}
-			if (chessBoard.down(x, y, nextChess)){
+			if (chessBoard.down(new Down(x, y, nextChess))){
 				nextChess = nextChess == Black ? White : Black;
 				nextChessMan = nextChess == Black ? "Black":"White";
 				chessBoard.printCurrentBoard();
