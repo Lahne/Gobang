@@ -1,8 +1,9 @@
 package funny.gobang;
 
 import java.io.IOException;
+import java.util.List;
 
-public class ChessBoard {
+public class ChessBoard implements Cloneable{
 
 	private final int[][] board;
 	public final int capacity;
@@ -14,49 +15,86 @@ public class ChessBoard {
 	public ChessBoard(int capacity){
 		this.capacity = capacity;
 		this.board = new int[capacity][capacity];
+		clear();
 	}
 	
+	private ChessBoard(int capacity, int[][] board){
+		this.capacity = capacity;
+		this.board = board;
+	} 
 	
-	public int[][] getBoard() {
+	public synchronized int[][] getBoard() {
 		int[][] old = board;
 		final int[][] current = new int[capacity][capacity];
 		for(int i=0; i<capacity; i++)
 			  for(int j=0; j<capacity; j++)
-			    old[i][j]=current[i][j];
+				  current[i][j]=old[i][j];
 		return current;
 	}
 
+	@Override
+	public synchronized ChessBoard clone(){
+		int[][] board = this.getBoard();
+		return new ChessBoard(capacity, board);
+	} 
 
 
 	public int getCapacity() {
 		return capacity;
 	}
 
-	public boolean canDown(int x, int y){
+	public synchronized boolean canDown(Down down){
+		int x = down.getX();
+		int y = down.getY();
+		return board[y][x] == Blank;
+	}
+	
+	public synchronized boolean canDown(int x, int y){
 		return board[y][x] == Blank;
 	}
 
-	public void initialize(){
-		
+	public synchronized void clear(){
 		for (int i=0; i < capacity; i++){
 			for(int j=0; j < capacity; j++){
 				board[i][j] = Blank;
 			}
-			
 		}
-		
+	}
+	
+	public synchronized int remove(int x, int y){
+		int chessMan = board[y][x];
+		board[y][x] = Blank;
+		return chessMan;
+	}
+	
+	public synchronized int remove(Down down){
+		int x = down.getX();
+		int y = down.getY();
+		return remove(x,y);
 	}
 	
 	
-	public boolean down(int x,int y, int chessMan){
-		if (board[y][x] == Blank){
-			board[y][x] = chessMan;
+	public synchronized boolean down(Down down){
+		if (canDown(down)){
+			int x = down.getX();
+			int y = down.getY();
+			board[y][x] = down.getChessMan();
 			return true;
 		}
 		return false;
 	}
 	
-	private void printXRow(int y){
+	public synchronized boolean down(List<Down> downs){
+		boolean ret = true;
+		for (Down down : downs ){
+			if (!down(down)){
+				ret = false;
+			}
+		}
+		return ret;
+	}
+	
+	private synchronized void printXRow(int y){
 		System.out.print(String.format("%2d|", y));
 		for(int j=0; j < capacity; j++){
 			String chess = "";
@@ -72,7 +110,7 @@ public class ChessBoard {
 		System.out.println();
 	}
 	
-	public void printCurrentBoard(){
+	public synchronized void printCurrentBoard(){
 		System.out.print(String.format("%2s|", ""));
 		for (int i=0; i < capacity; i++){
 			System.out.print(String.format("%2d|", i));
@@ -100,7 +138,7 @@ public class ChessBoard {
 				System.out.println("Out of index, X and Y should >=0 && < "+capacity);
 				continue;
 			}
-			if (chessBoard.down(x, y, nextChess)){
+			if (chessBoard.down(new Down(x, y, nextChess))){
 				nextChess = nextChess == Black ? White : Black;
 				nextChessMan = nextChess == Black ? "Black":"White";
 				chessBoard.printCurrentBoard();

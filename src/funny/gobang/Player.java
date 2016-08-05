@@ -2,9 +2,21 @@ package funny.gobang;
 
 public interface Player {
 
-	void register(ChessBoard board);
+	public String getName();
+
+	public void register(ChessBoard board);
 	
-	int[] thinkNextDown();
+	public void pickChessMan(int chessMan);
 	
-	void watchOpponentDown(int x,int y);
+	public Down thinkNextDown(int round) throws InterruptedGameException;
+	
+	//public void interruptGame(Game game);
+	
+	//public void giveup(Game game);
+	
+	public void watchOpponentDown(Down down);
+	
+	public void exit();
+	
+	public RoundResult executeCommand(RoundCommand command) throws InterruptedGameException;
 }
