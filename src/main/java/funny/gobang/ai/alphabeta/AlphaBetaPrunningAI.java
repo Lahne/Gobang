@@ -1,9 +1,11 @@
 package funny.gobang.ai.alphabeta;
 
+import funny.gobang.ai.AIUtils;
 import funny.gobang.ai.GoBangAI;
 import funny.gobang.ai.GoBangEvaluator;
 import funny.gobang.model.ChessBoard;
 import funny.gobang.model.Point;
+
 import static funny.gobang.model.ChessType.*;
 
 import java.util.Collections;
@@ -19,19 +21,19 @@ import java.util.List;
  */
 public class AlphaBetaPrunningAI implements GoBangAI,GoBangEvaluator{
 
-	private static long MAX_SCORE = Long.MAX_VALUE;
+	public static long MAX_SCORE = Long.MAX_VALUE;
 	
-	private static final int MIN_DEPTH = 1;
+	protected static final int MIN_DEPTH = 1;
 
     /**
      * the depth of search level.
      */
-	private final int searchDepth;
+	protected final int searchDepth;
 	
 	/**
 	 * evaluate current situation
 	 */
-	private GoBangEvaluator evaluator;
+	protected GoBangEvaluator evaluator;
 	
 
 	public AlphaBetaPrunningAI(int searchDepth) {
@@ -41,8 +43,7 @@ public class AlphaBetaPrunningAI implements GoBangAI,GoBangEvaluator{
 	
 
 	public AlphaBetaPrunningAI(int searchDepth, GoBangEvaluator evaluator) {
-		super();
-		this.searchDepth = searchDepth;
+		this(searchDepth);
 		this.evaluator = evaluator;
 	}
 	
@@ -65,17 +66,20 @@ public class AlphaBetaPrunningAI implements GoBangAI,GoBangEvaluator{
 	}
 	
 	public Point getNext(ChessBoard board, int chessType){
+		if (evaluator == null){
+			throw new RuntimeException("evaluator must not be null");
+		}
 		
 		List<Point> validPoints = generate(board, chessType);
-
-		List<PointScore> estimatePointScoreList = new LinkedList<>();
+		
+		List<PointScore> estimatePointScoreList = new LinkedList<PointScore>();
 		
 		for (Point onePoint : validPoints){
 			ChessBoard newChessBoard = board.clone();
 			
 			newChessBoard.downChess(onePoint, chessType);
 			
-			if (checkIfWin(newChessBoard, chessType)){
+			if (AIUtils.checkIfWin(newChessBoard, onePoint)){
 				return onePoint;
 			}
 			
@@ -94,13 +98,7 @@ public class AlphaBetaPrunningAI implements GoBangAI,GoBangEvaluator{
 		return evaluator.evaluate(board, chessType);
 	}
 	
-	
-	protected boolean checkIfWin(ChessBoard board, int chessType){
-		
-		return false;
-	}
-	
-	private PointScore pickOne(List<PointScore> pointScoreList){
+	protected PointScore pickOne(List<PointScore> pointScoreList){
 		PointScore maxPointScore = new PointScore(null, -MAX_SCORE);
 		for (PointScore pointScore : pointScoreList){
 			if (pointScore.getScore() >= maxPointScore.getScore()){
@@ -120,7 +118,7 @@ public class AlphaBetaPrunningAI implements GoBangAI,GoBangEvaluator{
 	
 
 	
-	private int nextChessType(int chessType){
+	protected int nextChessType(int chessType){
 		return (chessType == BLACK) ? WHITE : BLACK;
 	}
 	
@@ -135,7 +133,7 @@ public class AlphaBetaPrunningAI implements GoBangAI,GoBangEvaluator{
 	 * @param chessType
 	 * @return
 	 */
-	private long alphabeta(int depth, long alpha, long beta, ChessBoard board, int chessType){
+	protected long alphabeta(int depth, long alpha, long beta, ChessBoard board, int chessType){
 		
 		if (searchDepth == depth){
 			return evaluate(board,chessType);
@@ -150,20 +148,20 @@ public class AlphaBetaPrunningAI implements GoBangAI,GoBangEvaluator{
 			board.downChess(point, chessType);
 			
 			if (isMax){
-				if (checkIfWin(board, chessType)){
+				if (AIUtils.checkIfWin(board, point)){
 					alpha = MAX_SCORE;
 				}else{
 					alpha = Math.max(alpha, this.alphabeta(depth +1,alpha, beta, board, nextChessType(chessType)));
 				}
 			}else{
-				if (checkIfWin(board, chessType)){
+				if (AIUtils.checkIfWin(board, point)){
 					beta = -MAX_SCORE;
 				}else{
 					beta = Math.min(beta, this.alphabeta(depth +1, alpha, beta, board, nextChessType(chessType)));	
 				}
 			}
 			
-			board.downChess(point, EMPTY);
+			board.remove(point);
 			
 			if (beta <= alpha){
 				break;

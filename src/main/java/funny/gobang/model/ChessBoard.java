@@ -57,6 +57,14 @@ public class ChessBoard implements Cloneable{
 			}
 		}
 		
+		public synchronized int getChessType(Point point){
+			return board[point.getY()][point.getY()];
+		}
+		
+		public synchronized int getChessType(int x,int y){
+			return board[y][x];
+		}
+		
 		public synchronized int remove(Point point){
 			int x = point.getX();
 			int y = point.getY();
