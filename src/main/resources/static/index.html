@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Funny Gobang</title>
+</head>
+<body>
+<button type="button" id="initBtn">Test Init</button>
+<button type="button" id="startBtn">Test Start</button>
+<button type="button" id="playBtn">Test Play</button>
+<script type="text/javascript" src="/webjars/jquery/3.1.0/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#initBtn").click(function () {
+            $.get("/init/7/7", function (data) {
+                console.log("response:" + data);
+            });
+        });
+        $("#startBtn").click(function () {
+            $.get("/start/1", function (data) {
+                console.log("response:" + JSON.stringify(data));
+            });
+        });
+        $("#playBtn").click(function () {
+            $.get("/play/8/8", function (data) {
+                console.log("response:" + JSON.stringify(data));
+            });
+        });
+    });
+</script>
+</body>
+</html>
