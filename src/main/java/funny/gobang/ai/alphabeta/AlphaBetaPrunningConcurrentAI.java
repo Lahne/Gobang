@@ -29,7 +29,6 @@ public class AlphaBetaPrunningConcurrentAI extends AlphaBetaPrunningAI{
 	protected ExecutorService exeutorService; 
 	
 	public AlphaBetaPrunningConcurrentAI(int searchDepth) {
-		super(searchDepth);
 		exeutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 	}
 	

@@ -1,5 +1,6 @@
 package funny.gobang.service;
 
+import funny.gobang.ai.GoBangAI;
 import funny.gobang.model.AiResponse;
 import funny.gobang.model.Point;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,19 +13,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class AiService {
     @Autowired
-    private BoardService boardService;
-
-    @Autowired
-    private EvaluationService evaluationService;
-
-    @Value("${search.depth:6}")
-    private int searchDepth;
+    private GoBangAI goBangAI;
 
     public AiResponse play(int[][] board, int stone) {
-        //TODO call alpha-beta
-        //fake response
+        Point point = goBangAI.getNext(board, stone);
         AiResponse res = new AiResponse();
-        res.setPoint(new Point(7, 8));
+        res.setPoint(point);
         res.setStone(stone);
         return res;
     }
