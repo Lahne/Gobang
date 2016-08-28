@@ -8,7 +8,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class EvaluationService {
 
-	private boolean mifis;
+	public long evaluate(int[][] board, int currentStone) {
+		// TODO
+		return 0L;
+	}
+
+	//============below implementation can't work with a-b algorithm
+	/*private boolean mifis;
 
 	public EvaluationService(boolean ifis) {
 		// 初始化，默认为后下，白棋
@@ -49,10 +55,7 @@ public class EvaluationService {
 		}
 	}
 
-	public int evaluate(int[][] board, int currentStone) {
-		// TODO
-		return 0;
-	}
+
 
 	public int findQz(int x, int y, int[][] board)// 计算固定点的权重
 	{
@@ -152,6 +155,6 @@ public class EvaluationService {
 
 	public void setY(int y) {
 		this.y = y;
-	}
+	}*/
 }
 

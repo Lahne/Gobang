@@ -2,13 +2,16 @@ package funny.gobang.ai.alphabeta;
 
 import funny.gobang.ai.AIUtils;
 import funny.gobang.ai.GoBangAI;
-import funny.gobang.ai.GoBangEvaluator;
 import funny.gobang.model.ChessBoard;
 import funny.gobang.model.Point;
+import funny.gobang.service.BoardService;
+import funny.gobang.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import static funny.gobang.model.ChessType.*;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,45 +22,21 @@ import java.util.List;
  * @author Lahne
  *
  */
-public class AlphaBetaPrunningAI implements GoBangAI,GoBangEvaluator{
+@Service
+public class AlphaBetaPrunningAI implements GoBangAI{
 
 	public static long MAX_SCORE = Long.MAX_VALUE;
-	
-	protected static final int MIN_DEPTH = 1;
 
-    /**
-     * the depth of search level.
-     */
-	protected final int searchDepth;
-	
-	/**
-	 * evaluate current situation
-	 */
-	protected GoBangEvaluator evaluator;
+	@Autowired
+	protected BoardService boardService;
+	@Autowired
+	protected EvaluationService evaluationService;
+
+	@Value("${search.depth:4}")
+	protected int searchDepth;
 	
 
-	public AlphaBetaPrunningAI(int searchDepth) {
-		super();
-		this.searchDepth = ( searchDepth < MIN_DEPTH) ? MIN_DEPTH : searchDepth;
-	}
-	
-
-	public AlphaBetaPrunningAI(int searchDepth, GoBangEvaluator evaluator) {
-		this(searchDepth);
-		this.evaluator = evaluator;
-	}
-	
-	public GoBangEvaluator getEvaluator() {
-		return evaluator;
-	}
-
-
-
-	public void setEvaluator(GoBangEvaluator evaluator) {
-		this.evaluator = evaluator;
-	}
-
-
+@Override
 	public Point getNext(int[][] board, int chessType){
 		
 		ChessBoard chessBoard = new ChessBoard(board[0].length,board);
@@ -66,10 +45,6 @@ public class AlphaBetaPrunningAI implements GoBangAI,GoBangEvaluator{
 	}
 	
 	public Point getNext(ChessBoard board, int chessType){
-		if (evaluator == null){
-			throw new RuntimeException("evaluator must not be null");
-		}
-		
 		List<Point> validPoints = generate(board, chessType);
 		
 		List<PointScore> estimatePointScoreList = new LinkedList<PointScore>();
@@ -92,10 +67,9 @@ public class AlphaBetaPrunningAI implements GoBangAI,GoBangEvaluator{
 		
 	}
 	
-	@Override
 	public long evaluate(ChessBoard board, int chessType){
 		
-		return evaluator.evaluate(board, chessType);
+		return evaluationService.evaluate(board.getBoard(), chessType);
 	}
 	
 	protected PointScore pickOne(List<PointScore> pointScoreList){
@@ -111,9 +85,7 @@ public class AlphaBetaPrunningAI implements GoBangAI,GoBangEvaluator{
 
 	
 	public List<Point> generate(ChessBoard board,int chessType){
-		
-		
-		return Collections.emptyList();
+		return boardService.getCandidatePoints(board.getBoard(),chessType);
 	}
 	
 
