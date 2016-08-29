@@ -265,12 +265,12 @@ function Gobang(canvasDOM, rows, cols) {
 							dataType : "json",
 							success : function(res) {
 								if(res!=null){
-									newMove(res.point.x, res.point.y);
+									game.newMove(res.point.x, res.point.y);
 								}
 								$("#gobang-waiting").hide();
 							},
 							error : function() {
-								alert("Something Wrong");
+								$("#gobang-waiting").hide();
 							}
 						});
 					});
@@ -291,7 +291,7 @@ function Gobang(canvasDOM, rows, cols) {
 					}
 					var x = res.point.x;
 					var y = res.point.y;
-					newMove(x,y);
+					game.newMove(x,y);
 					$("#gobang-waiting").hide();
 				},
 				error : function() {
