@@ -1,17 +1,17 @@
 package funny.gobang.ai;
 
+
+import funny.gobang.AppConstants;
 import funny.gobang.model.ChessBoard;
 import funny.gobang.model.ChessType;
 import funny.gobang.model.Point;
 
 public class AIUtils {
 
-	public static Point[] directons = new Point[]{new Point(1,1),new Point(-1,1),new Point(0,1),new Point(1,0)};
-	
-	
+
     public static boolean checkIfWin(ChessBoard board,Point point){
-    	for (int i=0; i < directons.length ;i++){
-    		if (getContinousCount(board, point, directons[i]) == 5){
+    	for (int i=0; i < AppConstants.directons.length ;i++){
+    		if (getContinousCount(board, point, AppConstants.directons[i]) >= 5){
     			return true;
     		}
     	}
@@ -51,6 +51,4 @@ public class AIUtils {
 		return continousCount;
     	
     }
-    
-	
 }

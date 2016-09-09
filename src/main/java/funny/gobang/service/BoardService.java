@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static funny.gobang.AppConstants.*;
@@ -40,7 +41,12 @@ public class BoardService {
             }
         }
         if (currentStone == BLACK) {
-            List<Point> forbiddenPoints = forbiddenService.find(board);
+        	List<Point> forbiddenPoints = new LinkedList<>();
+        	for (Point point: points){
+        		if (forbiddenService.isForbiddenPoint(board, point)){
+        			forbiddenPoints.add(point);
+        		}
+        	}
             points.removeAll(forbiddenPoints);
         }
         return points;
