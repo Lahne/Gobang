@@ -62,4 +62,13 @@ public class ChessPattern {
         return result;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ChessPattern{");
+        sb.append("stone=").append(stone);
+        sb.append(", length=").append(length);
+        sb.append(", head=").append(head);
+        sb.append('}');
+        return sb.toString();
+    }
 }

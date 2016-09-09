@@ -249,7 +249,7 @@ function Gobang(canvasDOM, rows, cols) {
 				game.newMove(pos.y, pos.x);
 				steps++;
 				if(steps<=5){
-					 $.get("/init/"+pos.x+"/"+pos.y);
+					 $.get("/init/"+pos.y+"/"+pos.x);
 				}else{
 					play(pos.x, pos.y);
 				}
@@ -280,14 +280,14 @@ function Gobang(canvasDOM, rows, cols) {
 		function play(x, y) {
 			$("#gobang-waiting").show();
 			$.ajax({
-				url : "play/"+x+"/"+y,
+				url : "play/"+y+"/"+x,
 				type : "post",
 				dataType : "json",
 				success : function(res) {
 					if(res.win){
 						var winner = res.stone==1? "WHITE":"BLACK";
-						$("gobang-winner").html(winner);
-						$("gobang-winner").show();
+						$("#gobang-winner").html(winner);
+						$("#gobang-result").show();
 					}
 					var x = res.point.x;
 					var y = res.point.y;

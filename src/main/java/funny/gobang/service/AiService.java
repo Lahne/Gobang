@@ -15,9 +15,13 @@ public class AiService {
     @Autowired
     private GoBangAI goBangAI;
 
+    @Autowired
+    private BoardService boardService;
+
     public AiResponse play(int[][] board, int stone) {
         Point point = goBangAI.getNext(board, stone);
         AiResponse res = new AiResponse();
+        res.setWin(boardService.isWin(board,point,stone));
         res.setPoint(point);
         res.setStone(stone);
         return res;
