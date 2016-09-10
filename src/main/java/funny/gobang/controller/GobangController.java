@@ -5,6 +5,7 @@ import funny.gobang.AppUtil;
 import funny.gobang.model.AiResponse;
 import funny.gobang.model.Point;
 import funny.gobang.service.AiService;
+import funny.gobang.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,10 +28,14 @@ public class GobangController {
     @Autowired
     private AiService aiService;
 
+    @Autowired
+    private BoardService boardService;
+
     @RequestMapping("/init/{x}/{y}")
     public void init(@PathVariable int x, @PathVariable int y) {
         board[x][y] = moves.size() % 2 == 0 ? BLACK : WHITE;
-        moves.add(new Point(x, y));
+        Point point = new Point(x, y);
+        moves.add(point);
     }
 
     @RequestMapping("/start/{stone}")
@@ -50,8 +55,11 @@ public class GobangController {
     @RequestMapping("/play/{x}/{y}")
     public AiResponse play(@PathVariable int x, @PathVariable int y) {
         board[x][y] = moves.size() % 2 == 0 ? BLACK : WHITE;
+        Point point = new Point(x, y);
+        moves.add(point);
+        //TODO check if human move is win
         int[][] copyOfBoard = AppUtil.copyOf(board);
-        AiResponse aiResponse = aiService.play(board, aiStone);
+        AiResponse aiResponse = aiService.play(copyOfBoard, aiStone);
         board[aiResponse.getPoint().getX()][aiResponse.getPoint().getY()] = aiStone;
         moves.add(aiResponse.getPoint());
         return aiResponse;

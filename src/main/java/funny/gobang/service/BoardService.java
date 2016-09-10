@@ -1,6 +1,5 @@
 package funny.gobang.service;
 
-import funny.gobang.AppConstants;
 import funny.gobang.AppUtil;
 import funny.gobang.model.Point;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +40,12 @@ public class BoardService {
             }
         }
         if (currentStone == BLACK) {
-        	List<Point> forbiddenPoints = new LinkedList<>();
-        	for (Point point: points){
-        		if (forbiddenService.isForbiddenPoint(board, point)){
-        			forbiddenPoints.add(point);
-        		}
-        	}
+            List<Point> forbiddenPoints = new LinkedList<>();
+            for (Point point : points) {
+                if (forbiddenService.isForbiddenPoint(board, point)) {
+                    forbiddenPoints.add(point);
+                }
+            }
             points.removeAll(forbiddenPoints);
         }
         return points;
@@ -64,6 +63,28 @@ public class BoardService {
                 }
                 if (board[i][j] != EMPTY) {
                     return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isWin(int[][] board, Point p, int currentStone) {
+        int[][] dirs = {{0, 1}, {1, 0},
+                {1, 1}, {-1, 1}};
+        for (int[] dir : dirs) {
+            int cnt = 1;
+            for (int i = -1; i <= 1; i += 2) {
+                int sx = p.getX() + i * dir[0];
+                int sy = p.getY() + i * dir[1];
+                while (sy < BOARD_SIZE && sy >= 0 && sx < BOARD_SIZE && sx >= 0 &&
+                        board[sx][sy] == currentStone) {
+                    cnt++;
+                    if (cnt == 5) {
+                        return true;
+                    }
+                    sx += i * dir[0];
+                    sy += i * dir[1];
                 }
             }
         }

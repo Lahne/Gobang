@@ -7,6 +7,7 @@ import funny.gobang.model.Point;
 import funny.gobang.service.BoardService;
 import funny.gobang.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class AlphaBetaPrunningAI implements GoBangAI{
 	@Autowired
 	protected BoardService boardService;
 	@Autowired
+    @Qualifier("evaluationService")
 	protected EvaluationService evaluationService;
 
 	@Value("${search.depth:4}")

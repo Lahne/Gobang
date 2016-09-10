@@ -42,11 +42,11 @@ public class ChessBoard implements Cloneable{
 		public synchronized boolean canDown(Point point){
 			int x = point.getX();
 			int y = point.getY();
-			return board[y][x] == EMPTY;
+			return board[x][y] == EMPTY;
 		}
 		
 		public synchronized boolean canDown(int x, int y){
-			return board[y][x] == EMPTY;
+			return board[x][y] == EMPTY;
 		}
 
 		public synchronized void clear(){
@@ -58,25 +58,25 @@ public class ChessBoard implements Cloneable{
 		}
 		
 		public synchronized int getChessType(Point point){
-			return board[point.getY()][point.getY()];
+			return board[point.getX()][point.getY()];
 		}
 		
 		public synchronized int getChessType(int x,int y){
-			return board[y][x];
+			return board[x][y];
 		}
 		
 		public synchronized int remove(Point point){
 			int x = point.getX();
 			int y = point.getY();
-			int chessType = board[y][x];
-			board[y][x] = EMPTY;
+			int chessType = board[x][y];
+			board[x][y] = EMPTY;
 			return chessType;
 		}
 		
 		public synchronized void downChess(Point point,int chessType){
 			int x = point.getX();
 			int y = point.getY();
-			board[y][x] = chessType;
+			board[x][y] = chessType;
 		}
 	
 }
