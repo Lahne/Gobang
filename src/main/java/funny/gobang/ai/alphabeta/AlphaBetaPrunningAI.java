@@ -50,7 +50,8 @@ public class AlphaBetaPrunningAI implements GoBangAI{
 		List<Point> validPoints = generate(board, chessType);
 		
 		List<PointScore> estimatePointScoreList = new LinkedList<PointScore>();
-		
+	
+		long alphaScore = -MAX_SCORE;
 		for (Point onePoint : validPoints){
 			ChessBoard newChessBoard = board.clone();
 			
@@ -60,13 +61,16 @@ public class AlphaBetaPrunningAI implements GoBangAI{
 				return onePoint;
 			}
 			
-			long estimateScore = this.alphabeta(1, -MAX_SCORE, MAX_SCORE, newChessBoard, nextChessType(chessType) );
+			
+			long estimateScore = this.alphabeta(1, alphaScore, MAX_SCORE, newChessBoard, nextChessType(chessType) );
+			
+			alphaScore = Math.max(estimateScore, alphaScore);
 			
 			estimatePointScoreList.add(new PointScore(onePoint,estimateScore));
 		}
 		
 		return estimatePointScoreList.isEmpty() ? null : pickOne(estimatePointScoreList).getPoint();
-		
+			
 	}
 	
 	public long evaluate(ChessBoard board, int chessType){

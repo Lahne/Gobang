@@ -9,6 +9,19 @@ import funny.gobang.model.Point;
 public class AIUtils {
 
 
+    public static boolean checkIfWin(int[][] board,Point point, int stone){
+    	ChessBoard chessBoard = new ChessBoard(board[0].length, board);
+    	chessBoard.downChess(point, stone);
+    	boolean isWin = checkIfWin(chessBoard, point);
+    	chessBoard.remove(point);
+    	return isWin;
+    }
+    
+    public static boolean checkIfWin(int[][] board,Point point){
+    	ChessBoard chessBoard = new ChessBoard(board[0].length, board);
+    	return checkIfWin(chessBoard, point);
+    }
+	
     public static boolean checkIfWin(ChessBoard board,Point point){
     	for (int i=0; i < AppConstants.directons.length ;i++){
     		if (getContinousCount(board, point, AppConstants.directons[i]) >= 5){

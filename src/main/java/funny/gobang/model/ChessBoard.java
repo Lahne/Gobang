@@ -19,6 +19,10 @@ public class ChessBoard implements Cloneable{
 			this.board = board;
 		}
 		
+		public static ChessBoard valueOf(int[][] board){
+			return new ChessBoard(board[0].length, board);
+		}
+		
 		public synchronized int[][] getBoard() {
 			int[][] old = board;
 			final int[][] current = new int[capacity][capacity];
