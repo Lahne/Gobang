@@ -246,12 +246,20 @@ function Gobang(canvasDOM, rows, cols) {
 			pos = coordOnBoard(this, e);
 			if (pos.x >= 0 && pos.y >= 0 && pos.x < game.cols
 					&& pos.y < game.rows) {
-				game.newMove(pos.y, pos.x);
+				
+				var row = pos.y;
+				var col = pos.x;
+				
+				//judge whether a pieces in this cell
+				if(judgeExist(row, col))
+					return ;
+				
+				game.newMove(row, col);
 				steps++;
 				if(steps<=5){
-					 $.get("/init/"+pos.x+"/"+pos.y);
+					 $.get("/init/"+row+"/"+col);
 				}else{
-					play(pos.x, pos.y);
+					play(row, col);
 				}
 				if(steps==5){
 					$("#chooseColor").show();
@@ -265,7 +273,9 @@ function Gobang(canvasDOM, rows, cols) {
 							dataType : "json",
 							success : function(res) {
 								if(res!=null){
-									game.newMove(res.point.x, res.point.y);
+									var row = res.point.y;
+									var col = res.point.x;
+									game.newMove(row, col);
 								}
 								$("#gobang-waiting").hide();
 							},
@@ -277,21 +287,32 @@ function Gobang(canvasDOM, rows, cols) {
 				}
 			}
 		}
-		function play(x, y) {
+		
+		function judgeExist(row , col){
+			var arr = [row, col];
+			for(var i = 0; i < game.moves.length; i++){
+				if(game.moves[i].toString() == arr.toString()){
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		function play(row, col) {
 			$("#gobang-waiting").show();
 			$.ajax({
-				url : "play/"+x+"/"+y,
+				url : "play/"+row+"/"+col,
 				type : "post",
 				dataType : "json",
 				success : function(res) {
 					if(res.win){
 						var winner = res.stone==1? "WHITE":"BLACK";
-						$("gobang-winner").html(winner);
-						$("gobang-winner").show();
+						$("#gobang-winner").html(winner);
+						$("#gobang-result").show();
 					}
-					var x = res.point.x;
-					var y = res.point.y;
-					game.newMove(x,y);
+					var row = res.point.y;
+					var col = res.point.x;
+					game.newMove(row, col);
 					$("#gobang-waiting").hide();
 				},
 				error : function() {
