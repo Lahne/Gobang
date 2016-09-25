@@ -82,39 +82,10 @@ function Gobang(canvasDOM, rows, cols) {
 
 		this.draw();
 
-		// if (this.winningMove(row, col)) {
-		// var winnerDOM = document.getElementById("gobang-winner");
-		// if (this.currentPlayer == 0)
-		// winnerDOM.innerHTML = "Black";
-		// else
-		// winnerDOM.innerHTML = "White";
-		//
-		// if (isAI)
-		// winnerDOM.innerHTML = winnerDOM.innerHTML + "-AI";
-		//
-		// this.currentPlayer = 0;
-		// this.finish();
-		// return;
-		// }
-
 		this.currentPlayer = 1 - this.currentPlayer;
 
-		// /* AI */
-		// if (!isAI && this.enableAI) {
-		// var startTime = Date.now() / 1000;
-		// var waitingPanel = document.getElementById("gobang-waiting");
-		// waitingPanel.style.display = "table";
-		// var that = this;
-		// setTimeout(function() {
-		// ret = AI.play(that.grid, that.currentPlayer, that.hardness);
-		// waitingPanel.style.display = "none";
-		// var elapsed = (Date.now() / 1000 - startTime);
-		// console.log("AI said: ", ret[0], ret[1], " Spent: ", elapsed, "
-		// seconds.");
-		// that.newMove(ret[1][0], ret[1][1], true);
-		// }, 40);
-		// }
 	}
+	
 	this.regret = function() {
 		var tmp = this.moves.pop();
 		if (tmp)
@@ -125,6 +96,7 @@ function Gobang(canvasDOM, rows, cols) {
 		this.currentPlayer = 1 - this.currentPlayer;
 		this.draw();
 		this.currentPlayer = 1 - this.currentPlayer;
+		$.get("regret/");
 	}
 
 	// this.winningMove = function(row, col) {
@@ -176,6 +148,7 @@ function Gobang(canvasDOM, rows, cols) {
 		var buttons = document.getElementsByClassName("gobang-start");
 		for ( var i = 0; i < buttons.length; i++)
 			buttons[i].onclick = function() {
+				$.get("reset/")
 				game.run();
 			}
 
@@ -246,26 +219,36 @@ function Gobang(canvasDOM, rows, cols) {
 			pos = coordOnBoard(this, e);
 			if (pos.x >= 0 && pos.y >= 0 && pos.x < game.cols
 					&& pos.y < game.rows) {
-				game.newMove(pos.y, pos.x);
+				
+				var row = pos.y;
+				var col = pos.x;
+				
+				//judge whether have a piece in this cell
+				if(judgeExist(row, col))
+					return ;
+				
+				game.newMove(row, col);
 				steps++;
 				if(steps<=5){
-					 $.get("/init/"+pos.y+"/"+pos.x);
+					$.get("/init/"+row+"/"+col);
 				}else{
-					play(pos.x, pos.y);
+					play(row, col);
 				}
 				if(steps==5){
 					$("#chooseColor").show();
 					$("#chooseColor a").click(function(){
 						$("#chooseColor").hide();
 						$("#gobang-waiting").show();
-						var color = $(this).hasClass("write")?1:-1;
+						var color = $(this).hasClass("white")?1:-1;
 						$.ajax({
 							url : "/start/"+color,
 							type : "post",
 							dataType : "json",
 							success : function(res) {
 								if(res!=null){
-									game.newMove(res.point.x, res.point.y);
+									var row = res.point.x;
+									var col = res.point.y;
+									game.newMove(row, col);
 								}
 								$("#gobang-waiting").hide();
 							},
@@ -277,10 +260,21 @@ function Gobang(canvasDOM, rows, cols) {
 				}
 			}
 		}
-		function play(x, y) {
+		
+		function judgeExist(row , col){
+			var arr = [row, col];
+			for(var i = 0; i < game.moves.length; i++){
+				if(game.moves[i].toString() == arr.toString()){
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		function play(row, col) {
 			$("#gobang-waiting").show();
 			$.ajax({
-				url : "play/"+y+"/"+x,
+				url : "play/"+row+"/"+col,
 				type : "post",
 				dataType : "json",
 				success : function(res) {
@@ -289,9 +283,9 @@ function Gobang(canvasDOM, rows, cols) {
 						$("#gobang-winner").html(winner);
 						$("#gobang-result").show();
 					}
-					var x = res.point.x;
-					var y = res.point.y;
-					game.newMove(x,y);
+					var row = res.point.x;
+					var col = res.point.y;
+					game.newMove(row, col);
 					$("#gobang-waiting").hide();
 				},
 				error : function() {
