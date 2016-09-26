@@ -1,13 +1,11 @@
-package funny.gobang.service;
+package funny.gobang.service.tried;
 
 import funny.gobang.AppConstants;
 import funny.gobang.model.ChessBoard;
 import funny.gobang.model.ChessType;
 import funny.gobang.model.Point;
-import org.springframework.stereotype.Service;
+import funny.gobang.service.ForbiddenService;
 
-
-@Service("forbiddenServiceSampleImpl")
 public class ForbiddenServiceSampleImpl implements ForbiddenService {
 	
 	public final static int COMMON = 1;

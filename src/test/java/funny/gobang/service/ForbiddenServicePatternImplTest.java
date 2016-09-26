@@ -14,11 +14,12 @@ import funny.gobang.AppConstants;
 import funny.gobang.model.ChessBoard;
 import funny.gobang.model.ChessType;
 import funny.gobang.model.Point;
+import funny.gobang.service.tried.ForbiddenServicePatternImpl;
 
 import static funny.gobang.model.ChessType.BLACK;
 import static funny.gobang.model.ChessType.EMPTY;
 import static funny.gobang.model.ChessType.WHITE;
-import static funny.gobang.service.ForbiddenServicePatternImpl.*;
+import static funny.gobang.service.tried.ForbiddenServicePatternImpl.*;
 
 public class ForbiddenServicePatternImplTest {
 

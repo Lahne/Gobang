@@ -11,6 +11,8 @@ import org.junit.rules.TestName;
 import funny.gobang.AppConstants;
 import funny.gobang.model.ChessBoard;
 import funny.gobang.model.Point;
+import funny.gobang.service.tried.ForbiddenServiceSampleImpl;
+
 import static funny.gobang.model.ChessType.*;
 public class ForbiddenServiceSampleImplTest {
 	

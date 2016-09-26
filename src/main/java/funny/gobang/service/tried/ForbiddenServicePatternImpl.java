@@ -1,4 +1,4 @@
-package funny.gobang.service;
+package funny.gobang.service.tried;
 
 import funny.gobang.AppConstants;
 import funny.gobang.model.ChessBoard;
@@ -12,9 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.stereotype.Service;
-
-@Service("forbiddenService")
 public class ForbiddenServicePatternImpl {
 
 	public final static int COMMON = 1;
@@ -41,7 +38,7 @@ public class ForbiddenServicePatternImpl {
 	
 	boolean initilized = false;
 
-	ForbiddenServicePatternImpl() {
+	public ForbiddenServicePatternImpl() {
 		initilize();
 	}
 
@@ -99,6 +96,7 @@ public class ForbiddenServicePatternImpl {
 		init("neb$bben", LIVE_FOUR);
 		init("ne$bbben", LIVE_FOUR);
 
+
 		init("nbbeb$ebbn", FORBIDDEN);// should before below FIGHT_FOUR
 		init("nbeb$bebn", FORBIDDEN);
 		
@@ -122,9 +120,15 @@ public class ForbiddenServicePatternImpl {
 		init("#b$bben", FIGHT_FOUR);
 		init("#$bbben", FIGHT_FOUR);
 
-		init("nb$ebbn", FIGHT_FOUR);//bbeb$ebbn => forbidden
-		init("n$bebbn", FIGHT_FOUR);
-
+		init("#b$ebbn", FIGHT_FOUR);//bbeb$ebbn => forbidden
+		init("#$bebbn", FIGHT_FOUR);
+		init("nbe$bebbn", FIGHT_FOUR);
+		init("nbeb$ebbn", FIGHT_FOUR);
+		init("bbbe$bebbn", FIGHT_FOUR);
+		init("bbbeb$ebbn", FIGHT_FOUR);
+		init("neb$ebbn", FIGHT_FOUR);
+		init("ne$bebbn", FIGHT_FOUR);
+		
 		init("#b$bb#", DEAD_FOUR);
 		init("#$bbb#", DEAD_FOUR);
 
@@ -442,13 +446,12 @@ public class ForbiddenServicePatternImpl {
 			
 			for (PatternNode patternNode : patternNodes) {
 				if (patternNode.match(matcher, true, point)) {
-					matcher.pattern = patternNode.pattern;
-					matcher.isMatched = true;
+					matcher.markMatchedAndSetPattern(patternNode.pattern);
 					return true;
 				}
 			}
-			matcher.isMatched = false;
 			
+			matcher.markFail();
 			return false;
 		}
 		
@@ -599,7 +602,7 @@ public class ForbiddenServicePatternImpl {
 
 	}
 
-	static class Peeker {
+	public static class Peeker {
 
 		public static final int Boundary = -999;
 		
