@@ -190,6 +190,7 @@ function Gobang(canvasDOM, rows, cols) {
 	}
 
 	this.run = function() {
+		this.currentPlayer=0;
 		this.moves.splice(0, this.moves.length);
 		for ( var i = 0; i < this.rows; i++)
 			for ( var j = 0; j < this.cols; j++)
@@ -283,9 +284,11 @@ function Gobang(canvasDOM, rows, cols) {
 						$("#gobang-winner").html(winner);
 						$("#gobang-result").show();
 					}
-					var row = res.point.x;
-					var col = res.point.y;
-					game.newMove(row, col);
+                    if(res.point) {
+                        var row = res.point.x;
+                        var col = res.point.y;
+                        game.newMove(row, col);
+                    }
 					$("#gobang-waiting").hide();
 				},
 				error : function() {

@@ -7,9 +7,11 @@ import funny.gobang.model.Point;
 import funny.gobang.service.AiService;
 import funny.gobang.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ import static funny.gobang.AppConstants.*;
  * Created by charlie on 2016/8/14.
  */
 @RestController
+@Scope(WebApplicationContext.SCOPE_SESSION)
 public class GobangController {
     private int[][] board = new int[BOARD_SIZE][BOARD_SIZE];
     private List<Point> moves = new ArrayList<Point>(BOARD_SIZE * BOARD_SIZE);
@@ -57,7 +60,13 @@ public class GobangController {
         board[x][y] = moves.size() % 2 == 0 ? BLACK : WHITE;
         Point point = new Point(x, y);
         moves.add(point);
-        //TODO check if human move is win
+        boolean win = boardService.isWin(board, point, board[x][y]);
+        if (win) {
+            AiResponse aiResponse = new AiResponse();
+            aiResponse.setStone(board[x][y]);
+            aiResponse.setWin(true);
+            return aiResponse;
+        }
         int[][] copyOfBoard = AppUtil.copyOf(board);
         AiResponse aiResponse = aiService.play(copyOfBoard, aiStone);
         board[aiResponse.getPoint().getX()][aiResponse.getPoint().getY()] = aiStone;
@@ -67,10 +76,12 @@ public class GobangController {
 
     @RequestMapping("/regret")
     public void regret() {
-        if (moves.size() >= 2) {
+        if (moves.size() > 0) {
             Point p = moves.remove(moves.size() - 1);
             board[p.getX()][p.getY()] = EMPTY;
-            p = moves.remove(moves.size() - 1);
+        }
+        if (moves.size() > 0) {
+            Point p = moves.remove(moves.size() - 1);
             board[p.getX()][p.getY()] = EMPTY;
         }
     }

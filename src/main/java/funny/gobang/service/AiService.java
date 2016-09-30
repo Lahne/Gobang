@@ -4,6 +4,7 @@ import funny.gobang.ai.GoBangAI;
 import funny.gobang.model.AiResponse;
 import funny.gobang.model.Point;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AiService {
     @Autowired
+    @Qualifier("NegamaxAlphaBeta")
     private GoBangAI goBangAI;
 
     @Autowired
