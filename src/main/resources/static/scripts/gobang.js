@@ -68,6 +68,7 @@ function Gobang(canvasDOM, rows, cols) {
 
 	this.currentPlayer = 0;
 	this.moves = [];
+	var rows = ["O","N","M","L","K","J","I","H","G","F","E","D","C","B","A"];
 	this.grid = new Array(this.rows);
 	for ( var i = 0; i < this.rows; i++)
 		this.grid[i] = new Array(this.cols);
@@ -75,11 +76,12 @@ function Gobang(canvasDOM, rows, cols) {
 	this.enableAI = true;
 	this.hardness = 2;
 	this.newMove = function(row, col) {
+		countDown();
 		if (this.grid[row][col] != -1)
 			return;
 		this.grid[row][col] = this.currentPlayer;
 		this.moves.push([ row, col ]);
-
+		recordSteps(this.moves);
 		this.draw();
 
 		this.currentPlayer = 1 - this.currentPlayer;
@@ -97,32 +99,28 @@ function Gobang(canvasDOM, rows, cols) {
 		this.draw();
 		this.currentPlayer = 1 - this.currentPlayer;
 		$.get("regret/");
+		recordSteps(this.moves);
 	}
-
-	// this.winningMove = function(row, col) {
-	// for (var i = -1; i <= 1; i++)
-	// for (var j = -1; j <= 1; j++) {
-	// if (i == 0 && j == 0) continue;
-	// var cnt = 1;
-	// // Two direction
-	// for (var dir = -1; dir <= 1; dir+=2) {
-	// for (var l = 1; l <= 4; l++) {
-	// newrow = row + dir * i * l;
-	// newcol = col + dir * j * l;
-	// if (this.inBoard(newrow, newcol) &&
-	// this.currentPlayer == this.grid[newrow][newcol])
-	// cnt++;
-	// else
-	// break;
-	// if (cnt == 5)
-	// return true;
-	// }
-	// }
-	// if (cnt >= 5) return true;
-	// }
-	// return false;
-	// }
-
+	function recordSteps (moves){
+		var color = "";
+		var steps = "";
+		for(var i = 0; i < moves.length; i++){
+			color = (i%2==0)?"Black: " : "White: ";
+			steps += color+rows[moves[i][0]]+","+(moves[i][1]+1)+"\n";
+		}
+		$("#recordSteps").html(steps);
+	}
+	
+	function countDown(){
+		var remains = 60;
+		window.setInterval(function(){
+			if(remains<0)
+				return;
+			$("#remaingTime").html(remains--);
+		}, 1000);
+		
+	}
+	
 	this.init = function() {
 		this.canvasDOM = canvasDOM;
 		this.mainCanvas = canvasDOM.getContext("2d");
