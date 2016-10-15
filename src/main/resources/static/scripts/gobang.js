@@ -110,12 +110,17 @@ function Gobang(canvasDOM, rows, cols) {
 		}
 		$("#recordSteps").html(steps);
 	}
-	
+
 	function countDown(){
+        if(this.intervalId){
+            clearInterval(this.intervalId);
+        }
 		var remains = 60;
-		window.setInterval(function(){
-			if(remains<0)
-				return;
+        this.intervalId=window.setInterval(function(){
+			if(remains<0){
+                clearInterval(this.intervalId);
+                return;
+            }
 			$("#remaingTime").html(remains--);
 		}, 1000);
 		
