@@ -48,12 +48,12 @@ public class PvsNegamaxAlphaBeta implements GoBangAI {
         ExecutorService es = Executors.newSingleThreadExecutor();
         Future<PointScore> future = es.submit(() -> {
             PointScore lastPs = null;
-            for (int depth = 2; depth < 100; depth += 1) {
+            for (int depth = 2; depth < 100; depth += 2) {
                 try {
                     PointScore ps = negamax(board, boardHash, depth, -Long.MAX_VALUE, Long.MAX_VALUE, chessType);
                     LOGGER.info("depth:" + depth);
                     lastPs = ps;
-                    if (lastPs.getScore() == Long.MAX_VALUE) {
+                    if (lastPs.getScore() == Long.MAX_VALUE || lastPs.getScore() == -Long.MAX_VALUE) {
                         break;
                     }
                 } catch (InterruptedByTimeoutException e) {
@@ -92,7 +92,7 @@ public class PvsNegamaxAlphaBeta implements GoBangAI {
         }
 
         List<Point> points = boardService.getCandidatePoints(board, currentStone);
-        points=sort(points, board, boardHash, currentStone);
+        points = sort(points, board, boardHash, currentStone);
 
         PointScore bestPs = new PointScore(Long.MIN_VALUE);
         for (int i = 0; i < points.size(); i++) {
@@ -108,18 +108,21 @@ public class PvsNegamaxAlphaBeta implements GoBangAI {
             boardHash ^= positionHash;
 
             PointScore ps;
-            if (i == 0) {
-                ps = negamax(board, boardHash, depth - 1, -beta, -alpha, -currentStone);
-            } else {
-                ps = negamax(board, boardHash, depth - 1, -alpha - 1, -alpha, -currentStone);
-                if (-ps.getScore() > alpha && -ps.getScore() < beta) {
-                    ps = negamax(board, boardHash, depth - 1, -beta, ps.getScore(), -currentStone);
-                }
-            }
-            ps.setScore(-ps.getScore());
 
-            board[p.getX()][p.getY()] = AppConstants.EMPTY;
-            boardHash ^= positionHash;
+            try {
+                if (i == 0) {
+                    ps = negamax(board, boardHash, depth - 1, -beta, -alpha, -currentStone);
+                } else {
+                    ps = negamax(board, boardHash, depth - 1, -alpha - 1, -alpha, -currentStone);
+                    if (-ps.getScore() > alpha && -ps.getScore() < beta) {
+                        ps = negamax(board, boardHash, depth - 1, -beta, ps.getScore(), -currentStone);
+                    }
+                }
+                ps.setScore(-ps.getScore());
+            } finally {
+                board[p.getX()][p.getY()] = AppConstants.EMPTY;
+                boardHash ^= positionHash;
+            }
 
             if (ps.getScore() > bestPs.getScore()) {
                 bestPs = ps;
@@ -164,10 +167,13 @@ public class PvsNegamaxAlphaBeta implements GoBangAI {
         List<Point> normalPoints = Arrays.asList(pointScores.keySet().toArray(new Point[0]));
         Collections.sort(normalPoints, (o1, o2) -> pointScores.get(o2).compareTo(pointScores.get(o1)));
 
-        List<Point> sortedPoints=new ArrayList<>(points.size());
+        List<Point> sortedPoints = new ArrayList<>(points.size());
         sortedPoints.addAll(goodPoints);
         sortedPoints.addAll(normalPoints);
 
+        if (sortedPoints.size() > 16) {
+            sortedPoints = sortedPoints.subList(0, 16);
+        }
         return sortedPoints;
     }
 
