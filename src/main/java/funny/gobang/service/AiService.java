@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AiService {
     @Autowired
-    @Qualifier("NegamaxAlphaBeta")
+//    @Qualifier("NegamaxAlphaBeta")
+    @Qualifier("PvsNegamaxAlphaBeta")
     private GoBangAI goBangAI;
 
     @Autowired
