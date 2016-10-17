@@ -29,7 +29,7 @@ body {
 .gobang-container {
 	position: relative;
 	width: 100%;
-	height: 700px;
+	height: 650px;
 }
 
 canvas {
@@ -43,8 +43,8 @@ canvas {
 	left: 5%;;
 	right: 55%;
 	margin: 0 auto;
-	width: 700px;
-	height: 700px;
+	width: 650px;
+	height: 650px;
 	max-width: 100%;
 }
 
@@ -64,17 +64,18 @@ canvas {
 }
 
 .gobang-record {
-	position: relative;
-	width: 60%;
+	position: fixed;
+	width: 50%;
 	height: 100%;
+	left: 800px;
 	float: right;
 }
 
 .remaining-time {
 	vertical-align: middle;
-	width: 80%;
+	width: 50%;
 	height: 100px;
-	margin: 50px 0 0 20%;
+	margin: 50px 0 0 5%;
 	font-size: 35pt;
 }
 .record{
@@ -83,7 +84,8 @@ canvas {
 	font-size: 20pt;
 	width: 40%;
 	height: 500px;
-	margin-left: 20%;
+	margin-top: 3%;
+	margin-left: 5%;
 }
 </style>
 <body>
@@ -126,7 +128,7 @@ canvas {
 			<div  class="remaining-time">
 				<span>Remaining Time: &nbsp;&nbsp;</span><span id="remaingTime">60</span><span>S</span>
 			</div>
-			<textarea class = "record" id="recordSteps" style="overflow-x:hidden"></textarea>
+			<textarea disabled="disabled" class = "record" id="recordSteps" style="overflow-x:hidden"></textarea>
 		</div>
 	</div>
 	<div class="gobang-controller">

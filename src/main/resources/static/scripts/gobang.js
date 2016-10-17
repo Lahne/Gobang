@@ -11,13 +11,13 @@ function Gobang(canvasDOM, rows, cols) {
 			var cellWidth = this.canvasWidth / (this.cols + 1);
 			var cellHeight = this.canvasHeight / (this.rows + 1);
 			for ( var i = 1; i <= this.cols; i++) {
-				this.canvas.fillText(i, cellWidth * i - 3, cellHeight - 15);
+				this.canvas.fillText(i, cellWidth * i - 3, cellHeight*15 + 15);
 				this.canvas.moveTo(cellWidth * i, cellHeight);
 				this.canvas.lineTo(cellWidth * i, this.canvasHeight
 						- cellHeight);
 			}
 			for ( var i = 1; i <= this.rows; i++) {
-				this.canvas.fillText(i, cellWidth - 20, cellHeight * i + 5);
+				this.canvas.fillText(rowIndex[i-1], cellWidth - 20, cellHeight * i + 5);
 				this.canvas.moveTo(cellWidth, cellHeight * i);
 				this.canvas
 						.lineTo(this.canvasWidth - cellWidth, cellHeight * i);
@@ -68,7 +68,7 @@ function Gobang(canvasDOM, rows, cols) {
 
 	this.currentPlayer = 0;
 	this.moves = [];
-	var rows = ["O","N","M","L","K","J","I","H","G","F","E","D","C","B","A"];
+	var rowIndex = ["O","N","M","L","K","J","I","H","G","F","E","D","C","B","A"];
 	this.grid = new Array(this.rows);
 	for ( var i = 0; i < this.rows; i++)
 		this.grid[i] = new Array(this.cols);
@@ -98,15 +98,15 @@ function Gobang(canvasDOM, rows, cols) {
 		this.currentPlayer = 1 - this.currentPlayer;
 		this.draw();
 		this.currentPlayer = 1 - this.currentPlayer;
-		$.get("regret/");
 		recordSteps(this.moves);
+		$.get("regret/");
 	}
 	function recordSteps (moves){
 		var color = "";
 		var steps = "";
 		for(var i = 0; i < moves.length; i++){
 			color = (i%2==0)?"Black: " : "White: ";
-			steps += color+rows[moves[i][0]]+","+(moves[i][1]+1)+"\n";
+			steps +=(i+1)+":"+ color+rowIndex[moves[i][0]]+","+(moves[i][1]+1)+"\n";
 		}
 		$("#recordSteps").html(steps);
 	}
@@ -217,8 +217,6 @@ function Gobang(canvasDOM, rows, cols) {
 			};
 		}
 
-		// CountStep
-		var steps = 0;
 		this.hoverCanvasDOM.onclick = function(e) {
 			pos = coordOnBoard(this, e);
 			if (pos.x >= 0 && pos.y >= 0 && pos.x < game.cols
@@ -232,13 +230,12 @@ function Gobang(canvasDOM, rows, cols) {
 					return ;
 				
 				game.newMove(row, col);
-				steps++;
-				if(steps<=5){
+				if(game.moves.length<=5){
 					$.get("/init/"+row+"/"+col);
 				}else{
 					play(row, col);
 				}
-				if(steps==5){
+				if(game.moves.length==5){
 					$("#chooseColor").show();
 					$("#chooseColor a").click(function(){
 						$("#chooseColor").hide();
